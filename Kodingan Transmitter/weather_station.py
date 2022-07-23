@@ -9,8 +9,8 @@ import timeit
 import sys
 
 sys.path.insert(0, '/home/pi/encryption/Encryption')
-#from SimeckCipher_enc import encrypt_dt
-from SpeckCipher_enc import encrypt_dt
+from SimeckCipher_enc import encrypt_dt
+#from SpeckCipher_enc import encrypt_dt
 #from SimonCipher_enc import encrypt_dt
 #DHT22 SENSOR
 DHT_SENSOR = Adafruit_DHT.DHT22
@@ -18,7 +18,7 @@ dht_pin = 17
 
 #WIND SENSOR
 wind_count = 0
-wind_interval=10.00 #second
+wind_interval=5.00 #second
 radius_m = 0.1 #meter
 calibration_value = 2.0
 m_in_km = 1000
@@ -96,7 +96,7 @@ if __name__ == '__main__':
        #block=int(input('input block size: '))
        #key=int(input('input key size: '))
        #pesan_size=int(input('input message size: '))
-       #for k in range(0,30):
+       #for k in range(0,40):
          #static block and key size
          block = 32
          key = 64
@@ -112,12 +112,10 @@ if __name__ == '__main__':
          print("Curah Hujan: "+str(rainfall)+" mm")
          print("Kelembapan Tanah: "+str(soilVal)+" %")
          #time_send=times()
-         send2recv_1 ="v"+ str(format_speed)+"r"+str(rainfall)+"T"+str(temp)+"H"+str(hum)+"s"+str(soilVal)+'n'
+         send2recv_1 ="velocity"+ str(format_speed)+"rainfall"+str(rainfall)+"Temperature"+str(temp)+"Humidity"+str(hum)+"soil"+str(soilVal)+'n'
          #kirim(send2recv_1)
 
          	#code for encrypt
-         #enc_msg = encrypt_dt(send2recv_1)
-                # code for test
          enc_msg = encrypt_dt(send2recv_1,block,key,pesan_size)
 
          kirim(enc_msg)
