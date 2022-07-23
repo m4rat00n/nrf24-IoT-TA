@@ -462,6 +462,7 @@ button:hover {
     </style>
 
     <title>Stasiun Cuaca Lokal</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
 </head>
 <body>
     <!--tab section-->

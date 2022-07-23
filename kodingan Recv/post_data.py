@@ -2,8 +2,8 @@ import requests
 import re
 
 def upload_data(pkt_sn,pkt_rec,msg,time_recv,chiper_len,plain_len,jarak,time_send):
-    ENDPOINT = "http://localhost/addData.php?function=add_data"
-    ENDPOINT2 = "http://localhost/addData.php?function=update_data"
+    ENDPOINT = "https://aws-plantationmonitoring.000webhostapp.com/addData.php?function=add_data"
+    ENDPOINT2 = "https://aws-plantationmonitoring.000webhostapp.com/addData.php?function=update_data"
     
     if msg == 'null':
        delay = (int(time_recv)-int(time_send))/1000000+0.02
@@ -14,11 +14,11 @@ def upload_data(pkt_sn,pkt_rec,msg,time_recv,chiper_len,plain_len,jarak,time_sen
        soil_f = 0.0
     else:
        #retime_send = re.compile("d(\d{6,12})")
-       reangin = re.compile("v(\d{1,2}.\d{1,3})")
-       rehujan = re.compile("r(\d{1,3}.\d{0,2})")
-       retemp = re.compile("T(\d{1,2}.\d{1,2})")
-       rehum = re.compile("H(\d{1,3}.\d{1,2})")
-       resoil = re.compile("s(\d{1,3}.\d{1,2})")
+       reangin = re.compile("velocity(\d{1,2}.\d{1,3})")
+       rehujan = re.compile("rainfall(\d{1,3}.\d{0,2})")
+       retemp = re.compile("Temperature(\d{1,2}.\d{1,2})")
+       rehum = re.compile("Humidity(\d{1,3}.\d{1,2})")
+       resoil = re.compile("soil(\d{1,3}.\d{1,2})")
 
        #time_send = retime_send.search(msg)
        angin = reangin.search(msg)

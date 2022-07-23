@@ -12,8 +12,8 @@ GPIO.setmode(GPIO.BCM)
 from lib_nrf24 import NRF24
 from post_data import upload_data
 #from SimonCipher_dec import decrypt_dt
-#from SimeckCipher import decrypt_dt
-from SpeckCipher_dec import decrypt_dt
+from SimeckCipher_dec import decrypt_dt
+#from SpeckCipher_dec import decrypt_dt
 import time
 from datetime import datetime
 import spidev
@@ -50,14 +50,13 @@ radio2.startListening()
 c=1
 while True:
   #block = int(input('input Block Size: '))
-   block = 32
-   key = 64
+   #block = 32
+   #key = 64
    jrk = 0
   #key = int(input('input Key Size: '))
   #jrk = int(input("Enter Distance: "))
-  #for i in range(0,30):
+  #for i in range(0,40):
    try:
-    #akpl_buf = ['r','e','c','e','i','v','e','d','!']
     akpl_buf = [1]
     #akpl_buf2 = [2]
     while not radio2.available(0):
@@ -66,6 +65,8 @@ while True:
     recv_buffer = []
     radio2.read(recv_buffer, radio2.getDynamicPayloadSize())
     radio2.writeAckPayload(1, akpl_buf, len(akpl_buf))
+    header = recv_buffer[0]
+    del recv_buffer[0]
     str_msg = ''.join(map(chr, recv_buffer))
     if '0x' in str_msg or str_msg.upper().isupper() == True:
         #print('log if luar')
@@ -93,31 +94,40 @@ while True:
 
         print ("Total Packet: ") ,
         print (str(packet))
-        time.sleep(2)
+        time.sleep(1)
    
         pkt_count = 0
         str_msg1 = '' 
+        i = 1
         tot_pkt = int(packet)
-        for i in range(tot_pkt):
+        while i<=tot_pkt:
             while not radio2.available(0):
                 time.sleep(1/100)
 
             recv_buffer1 = []
             radio2.read(recv_buffer1, radio2.getDynamicPayloadSize())
             radio2.writeAckPayload(1, akpl_buf, len(akpl_buf))
+
+            head = recv_buffer1[0]
+            del recv_buffer1[0]
+
+            id = recv_buffer1[0]
+            del recv_buffer1[0]
+
             #Proccess the message
             act_cek = ''.join(map(chr, recv_buffer1))
-            #str_msg1 = str_msg1+''.join(map(chr, recv_buffer1))
-            if '0x' in act_cek or act_cek.upper().isupper() == True:
+            if header == head:
+              if '0x' in act_cek or act_cek.upper().isupper() == True and id == i:
                 str_msg1 = str_msg1+''.join(map(chr, recv_buffer1))
                 cek = True
                 pkt_count += 1
+                i += 1
                 #print('masuk if dalam')
-            else:
+              else:
                 #print('else dalam')
                 cek = False
                 break
-            time.sleep(2)
+            time.sleep(1)
         #print(cek)
         if cek == True:
             enc_msg_len = len(str_msg1)
@@ -125,7 +135,6 @@ while True:
             message = decrypt_dt(str_msg1,block,key)
             msg_len = len(message)
             #code for upload and regex for get the data
-            #upload_data(str(str_msg1),time_recv)
             #upload for the data with encryption
             upload_data(tot_pkt,pkt_count,message, time_recv, enc_msg_len, msg_len, jrk, time_send_fix)
         else:
@@ -138,6 +147,15 @@ while True:
     upload_data(tot_pkt,pkt_count,'null', time_recv,enc_msg_len,0,jrk,time_send_fix)
 
    except IOError as err:
+    print(err)
+    enc_msg_len=len(str_msg1)
+    upload_data(tot_pkt,pkt_count,'null', time_recv,enc_msg_len,0,jrk,time_send_fix)
+
+   except AttributeError as err:
+    print(err)
+    enc_msg_len=len(str_msg1)
+    upload_data(tot_pkt,pkt_count,'null', time_recv,enc_msg_len,0,jrk,time_send_fix)
+   except IndexError as err:
     print(err)
     enc_msg_len=len(str_msg1)
     upload_data(tot_pkt,pkt_count,'null', time_recv,enc_msg_len,0,jrk,time_send_fix)
