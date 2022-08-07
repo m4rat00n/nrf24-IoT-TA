@@ -55,7 +55,6 @@ def kirim(message):
         x[:0]=["1",pkt_id]
         tot_pkt=tot_pkt+1
         pkt_id += 1
-    #tot_pkt=list(str(tot_pkt))
 
     while True:
         # send a packet to receiver
@@ -82,8 +81,12 @@ def kirim(message):
             #continue
         time.sleep(5)
         #stop=timeit.default_timer()
+
+        #j = 1
         #if cek_ack == True:
         for pkt in split_msg:
+          #while j <= tot_pkt:
+            #pkt = split_msg[j-1]
             radio.write(pkt)
             print("Message : ")
             print(pkt)
@@ -93,10 +96,12 @@ def kirim(message):
                 radio.read(pl_buffer, radio.getDynamicPayloadSize())
                 print ("Received back: ")
                 print (pl_buffer)
+                #j += 1
             else:
                 print ("Received: Ack only, no payload")
+                #time.sleep(5)
+                #continue
             time.sleep(5)
         #print("masuk")
         #print(stop-start)
         break
-
