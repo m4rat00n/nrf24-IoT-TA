@@ -18,7 +18,7 @@ dht_pin = 17
 
 #WIND SENSOR
 wind_count = 0
-wind_interval=5.00 #second
+wind_interval=10.00 #second
 radius_m = 0.1 #meter
 calibration_value = 2.0
 m_in_km = 1000
@@ -42,11 +42,11 @@ def spin():
 def calculate_speed(time_sec):
    global wind_count
    circum_m = (2*math.pi)*radius_m
-   rotasi = wind_count / 2.0
+   rotasi = wind_count / wind_interval
    dist_km = (circum_m * rotasi)/m_in_km
    km_per_sec= dist_km/time_sec
    km_per_jam = km_per_sec*s_in_jam
-   return km_per_jam * calibration_value*4
+   return km_per_jam * calibration_value
 
 def reset_wind():
    global wind_count
