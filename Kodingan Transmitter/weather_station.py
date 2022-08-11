@@ -21,8 +21,7 @@ wind_count = 0
 wind_interval=10.00 #second
 radius_m = 0.1 #meter
 calibration_value = 2.0
-m_in_km = 1000
-s_in_jam=3600
+ms_to_kmh = 3.6
 
 #RAIN SENSOR
 #Luas corong 5,5 cm x 3,5 cm = 19,25 cm2
@@ -42,11 +41,10 @@ def spin():
 def calculate_speed(time_sec):
    global wind_count
    circum_m = (2*math.pi)*radius_m
-   rotasi = wind_count / wind_interval
-   dist_km = (circum_m * rotasi)/m_in_km
-   km_per_sec= dist_km/time_sec
-   km_per_jam = km_per_sec*s_in_jam
-   return km_per_jam * calibration_value
+   rotasi = wind_count / time_sec #rps
+   velocity_ms = circum_m * rotasi #m/s
+   velocity_kmh = velocity_ms*ms_to_kmh #km/h
+   return velocity_kmh * calibration_value
 
 def reset_wind():
    global wind_count
